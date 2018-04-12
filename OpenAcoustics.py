@@ -79,6 +79,12 @@ def sound_power_level(watts, W0 = 10**(-12), r = True):
     else: return 10*log10(watts/W0)
     #unit is dB power (SWL)
 
+def add(levels):
+    total = 0
+    for i in levels:
+        total += 10**(i/10)
+    return round(10*log10(total), 1)
+
 
 '''Spectrum'''
 
@@ -92,6 +98,10 @@ def Leq(time, sound_pressure, reference_pressure = 2*(10**(-5))):
     integrand = (sound_pressure**2)/(reference_pressure**2)
     integration = integrate(integrand,(t, 0, time))
     return 10*log10((1/time)*integration)
+
+def test_leq(levels, time):
+    levels = numpy.asarray(levels)
+    return 10.0 * log10((1.0/time) * numpy.sum(10.0**(levels/10.0)))
 
 #can't get the integration with infinite limits to return positive
 """
