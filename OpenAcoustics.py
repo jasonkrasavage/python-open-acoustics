@@ -6,10 +6,8 @@
 from math import sqrt #for speed of sound
 from math import pi #for angular wavenumber and angular frequency
 from math import log10 #for decibel sound intensity, Leq, and SEL
-from sympy import integrate #for Leq
-from sympy import Symbol #for Leq
-import numpy #for SEL
-from scipy.integrate import quad
+from numpy import asarray #for Leq/SEL
+from numpy import array #for a weighting
 
 '''Global Variables'''
 
@@ -79,40 +77,69 @@ def sound_power_level(watts, W0 = 10**(-12), r = True):
     else: return 10*log10(watts/W0)
     #unit is dB power (SWL)
 
-def add(levels):
+def db_add(levels):
     total = 0
-    for i in levels:
-        total += 10**(i/10)
+    for i in levels: total += 10**(i/10)
     return round(10*log10(total), 1)
+
+'''Decibel Weightings'''
+
+def a_weighting(spectrum):
+    spectrum_array = asarray(spectrum)
+    single_corrections = array([-39.4, -26.2, -16.1, -8.6,
+                                -3.2, 0, 1.2, 1, -1.1, -6.6])
+    third_corrections = array([-56.7, -50.5, -44.7, -39.4,
+                               -34.6, -30.2, -26.2, -22.5,
+                               -19.1, -16.1, -13.4, -10.9,
+                               -8.6, -6.6, -4.8, -3.2, -1.9,
+                               -0.8, 0, 0.6, 1.0, 1.2, 1.3,
+                               1.2, 1.0, 0.5, -0.1, -1.1,
+                               -2.5, -4.3, -6.6])
+    if len(spectrum) > 10:
+        #1/3 octave band
+        return (spectrum_array + third_corrections)
+    else:
+        #1/1 octave band
+        return (spectrum_array + single_corrections)
 
 
 '''Spectrum'''
 
+#returns a list of the center frequencies in the range of human hearing (20hz - 20kHz)
+def octave_band_centers(low_fc = 31.250):
+    centers, center = [low_fc], low_fc
+    while centers[-1] < 10000:
+        center *= 2
+        centers.append(round(center))
+    return centers
+
+def third_octave_band_centers(low_fc = 15.625):
+    centers, center = [low_fc], low_fc
+    while centers[-1] < 16000:
+        center *= 2**(1/3)
+        centers.append(round(center, 2))
+    return centers
+    
+
+
 
 '''Descriptors'''
-#is the time in this formula seconds or hours?
-#is the sound pressure in this formula one measurement at one time?
-#If so, which measurement at which time do you use?
-def Leq(time, sound_pressure, reference_pressure = 2*(10**(-5))):
-    t = Symbol('t')
-    integrand = (sound_pressure**2)/(reference_pressure**2)
-    integration = integrate(integrand,(t, 0, time))
-    return 10*log10((1/time)*integration)
 
-def test_leq(levels, time):
-    levels = numpy.asarray(levels)
-    return 10.0 * log10((1.0/time) * numpy.sum(10.0**(levels/10.0)))
+#takes two regular python lists as arguments, time (seconds) and level (dB)
+def Leq(time, level):
+    T, L = asarray(time), asarray(level)
+    return 10*log10(sum(T*10**(L/10))/sum(T))
 
-#can't get the integration with infinite limits to return positive
-"""
-def SEL(sound_pressure, reference_pressure = 2*(10**(-5))):
-    t = Symbol('t')
-    integrand = lambda x: ((sound_pressure**2)/(reference_pressure**2))
-    integration = quad(integrand,-numpy.inf, numpy.inf)
-    print(integration)
-    return 10*log10(integration[0])
+def SEL(time, level):
+    T, L = asarray(time), asarray(level)
+    return 10*log10(sum(T*10**(L/10)))
+
+def testsel(time, level):
+    T, L = asarray(time), asarray(level)
+    return Leq(T, L) + (10 * log10(sum(T)))
+
+def Ldn(daylevel, daytime, nightlevel, nighttime):
+    day, night = Leq(daylevel, daytime), Leq(nightlevel, nighttime)
+    return 10*log10((15*(10**(day/10))+9*(10**((night+10)/10)))/24)
     
-"""
-def SEL(time, sound_pressure):
-    return Leq(time, sound_pressure) + (10*log10(time))
 
