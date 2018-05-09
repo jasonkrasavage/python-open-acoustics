@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='python-open-acoustics',
+    name='pyopenacoustics',
     version='1.0.0a1',
     description='A module executing acoustics calculations',
     long_description_content_type='text/markdown',
@@ -22,7 +22,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     keywords='acoustics audio sound environmentalacoustics ',
-    py_modules=["python-open-acoustics"],
+    py_modules=["pyopenacoustics"],
     install_requires=['numpy'],
 
    
