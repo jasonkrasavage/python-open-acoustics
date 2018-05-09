@@ -134,14 +134,16 @@ def third_octave_band_centers(low_fc = 15.625):
 
 '''Descriptors'''
 
-def recExposureTimes(levels): #returns the recommended exposure times for an array of dBA values (minutes)
-    return 480/(2**((levels-85)/3))
+def recExposureTime(level): #returns the recommended exposure times for an array of dBA values (minutes)
+    return 480/(2**((level-85)/3))
 
 def dose(exposureTimes, levels): #returns the daily noise dose for arrays of both actual exposure times and their corresponding dBA levels)
-    return 100*np.sum(exposureTimes/T(levels))
+    C, L = asarray(exposureTimes), asarray(levels)
+    return 100*sum(C/recExposureTime(L))
 
-def TWA(CL): #returns the time weighted average for a given 2 dimensional array of exposure times and levels
-    return 10*np.log10((D(CL[0,:],CL[1,:]))/100)+85
+def TWA(exposureTimes, levels): #returns the time weighted average for two corresponding lists of exposure times and levels
+    C, L = asarray(exposureTimes), asarray(levels)
+    return 10*log10((dose(C,L))/100)+85
 
 def Leq(times, levels):
     T, L = asarray(times), asarray(levels)
