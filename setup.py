@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pyopenacoustics',
-    version='1.0.0a2',
+    version='1.0.0a3',
     description='A module executing acoustics calculations',
     long_description_content_type='text/markdown',
     url='https://github.com/jasonkrasavage/python-open-acoustics',

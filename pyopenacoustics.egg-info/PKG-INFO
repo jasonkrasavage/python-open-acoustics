@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: pyopenacoustics
+Version: 1.0.0a3
+Summary: A module executing acoustics calculations
+Home-page: https://github.com/jasonkrasavage/python-open-acoustics
+Author: Jason Krasavage
+Author-email: jason.krasavage@loop.colum.edu
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: acoustics audio sound environmentalacoustics
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
