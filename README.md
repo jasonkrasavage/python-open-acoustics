@@ -7,4 +7,4 @@ For the full documentation PDF, visit the Github repository homepage.
 
 https://github.com/jasonkrasavage/python-open-acoustics
 
-This project is open source, feel free to fork the repo, add functionality, change code, etc. and email your changes to jason.krasavage@loop.colum.edu. 
+This project is free and open source, feel free to fork the repo, add functionality, change code, etc. and email your changes to jason.krasavage@loop.colum.edu. 
